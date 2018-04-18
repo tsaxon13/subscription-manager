@@ -84,6 +84,9 @@ class ContentPluginActionInvoker(certlib.BaseActionInvoker):
 
 
 class ContentActionClient(base_action_client.BaseActionClient):
+    def __init__(self, cache_only=False):
+        super(ContentActionClient, self).__init__()
+        self.cache_only = cache_only
 
     def _get_libset(self):
         """Return a generator that creates a ContentPluginAction* for each update_content plugin.
@@ -92,7 +95,7 @@ class ContentActionClient(base_action_client.BaseActionClient):
         for each plugin hook mapped to the 'update_content_hook' slot.
         """
 
-        yield repolib.RepoActionInvoker()
+        yield repolib.RepoActionInvoker(cache_only=self.cache_only)
 
         plugin_manager = inj.require(inj.PLUGIN_MANAGER)
 

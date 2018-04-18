@@ -36,9 +36,13 @@ CONTENT_ACCESS_CERT_CAPABILITY = "org_level_content_access"
 
 
 class EntCertActionInvoker(certlib.BaseActionInvoker):
+    def __init__(self, cache_only=False, locker=None):
+        super(EntCertActionInvoker, self).__init__(locker=locker)
+        self.cache_only = cache_only
+
     """Invoker for entitlement certificate updating actions."""
     def _do_update(self):
-        action = EntCertUpdateAction()
+        action = EntCertUpdateAction(self.cache_only)
         return action.perform()
 
 
@@ -103,12 +107,13 @@ class EntCertUpdateAction(object):
     rogue: ent certs installed on system but not known by RHSM API.
     missing: ent certs RHSM API knows, but are not installed on system.
     """
-    def __init__(self, report=None):
+    def __init__(self, cache_only=False, report=None):
         self.cp_provider = inj.require(inj.CP_PROVIDER)
         self.uep = self.cp_provider.get_consumer_auth_cp()
         self.ent_dir = inj.require(inj.ENT_DIR)
         self.identity = require(IDENTITY)
         self.report = EntCertUpdateReport()
+        self.cache_only = cache_only
         self.content_access_cache = inj.require(inj.CONTENT_ACCESS_CACHE)
 
     # NOTE: this is slightly at odds with the manual cert import
@@ -211,7 +216,7 @@ class EntCertUpdateAction(object):
         log.debug("entcerlibaction.repo_hook")
         try:
             # NOTE: this may need a lock
-            content_action = content_action_client.ContentActionClient()
+            content_action = content_action_client.ContentActionClient(self.cache_only)
             content_action.update()
         except Exception as e:
             log.debug(e)
