@@ -471,7 +471,7 @@ class ProductManager(object):
                 # is the desktop product cert installed?
                 for pc in self.pdir.list():
                     if self._is_desktop(pc.products[0]):
-                        log.info("removing obsolete desktop cert: %s" % pc.path)
+                        log.debug("removing obsolete desktop cert: %s" % pc.path)
                         # desktop product cert is installed,
                         # delete the desktop product cert
                         pc.delete()
@@ -483,7 +483,7 @@ class ProductManager(object):
             # the write if so:
             if self._is_desktop(p):
                 if self._workstation_cert_exists():
-                    log.info("skipping obsolete desktop cert")
+                    log.debug("skipping obsolete desktop cert")
                     continue
 
             # See if the product cert already exists
@@ -539,7 +539,7 @@ class ProductManager(object):
         db_updated = False
         for (product, repo) in products_to_update_db:
             # known_repos is None means we have no repo info at all
-            log.info("Updating product db with %s -> %s" % (product.id, repo))
+            log.debug("Updating product db with %s -> %s" % (product.id, repo))
             # if we don't have a db entry for that prod->repo mapping, add one
             self.db.add(product.id, repo)
             db_updated = True
@@ -590,7 +590,7 @@ class ProductManager(object):
             path = self.pdir.abspath(fn)
             cert.write(path)
             self.pdir.refresh()
-            log.info("Installed product cert %s: %s %s" % (product.id, product.name, cert.path))
+            log.debug("Installed product cert %s: %s %s" % (product.id, product.name, cert.path))
             products_installed.append(cert)
         return products_installed
 
@@ -699,7 +699,7 @@ class ProductManager(object):
 
                 # If product id maps to a repo that we know is disabled, don't delete it.
                 if repo in disabled_repos:
-                    log.info("%s is disabled. Not deleting product cert %s", repo, prod_hash)
+                    log.warn("%s is disabled. Not deleting product cert %s", repo, prod_hash)
                     delete_product_cert = False
 
                 # is the repo we find here actually active? try harder to find active?
@@ -712,10 +712,10 @@ class ProductManager(object):
 
         # TODO: plugin hook for pre_product_id_delete
         for product, cert in certs_to_delete:
-            log.info("None of the repos for %s are active: %s",
+            log.debug("None of the repos for %s are active: %s",
                      product.id,
                      self.db.find_repos(product.id))
-            log.info("product cert %s for %s is being deleted" % (product.id, product.id))
+            log.debug("product cert %s for %s is being deleted" % (product.id, product.id))
             cert.delete()
             self.pdir.refresh()
             # TODO: plugin hook for post_product_id_delete

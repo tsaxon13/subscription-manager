@@ -52,13 +52,13 @@ class UnregisterService(object):
 
         try:
             self.uep.unregisterConsumer(self.identity.uuid)
-            log.info("Successfully un-registered.")
+            log.debug("Successfully un-registered.")
             managerlib.system_log("Unregistered machine with identity: %s" % self.identity.uuid)
             managerlib.clean_all_data(backup=False)
             self.cp_provider.clean()
         except connection.GoneException as ge:
             if ge.deleted_id == self.identity.uuid:
-                log.info(
+                log.debug(
                     "This consumer's profile has been deleted from the server. Local certificates and "
                     "cache will be cleaned now."
                 )

@@ -123,7 +123,7 @@ class Locale(object):
             try:
                 lang = gettext.translation(APP, DIR, languages=[new_language])
             except IOError as err:
-                log.info('Could not import locale either for %s: %s' % (new_language, err))
+                log.error('Could not import locale either for %s: %s' % (new_language, err))
                 new_language = None
             else:
                 log.debug('Using new locale for language: %s' % new_language)
@@ -151,7 +151,7 @@ class Locale(object):
                 try:
                     lang = gettext.translation(APP, DIR, languages=[language])
                 except IOError as err:
-                    log.info('Could not import locale for %s: %s' % (language, err))
+                    log.error('Could not import locale for %s: %s' % (language, err))
                     # When original language was not found, then we will try another
                     # alternatives.
                     lang, language = cls._find_lang_alternative(language)

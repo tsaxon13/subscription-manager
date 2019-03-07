@@ -141,7 +141,7 @@ class ContainerCertDir(object):
             log.warn("Exiting plugin")
             return
         if not os.path.exists(self.path):
-            log.info("Container cert directory does not exist, creating it.")
+            log.debug("Container cert directory does not exist, creating it.")
             os.mkdir(self.path)
 
         # Build up the list of certificates that should be in the
@@ -160,13 +160,13 @@ class ContainerCertDir(object):
             # certificate and key. Because we use serials in the filename, this
             # should be safe.
             if not os.path.exists(full_cert_path):
-                log.info("Copying: %s -> %s" %
+                log.debug("Copying: %s -> %s" %
                     (keypair.cert_path, full_cert_path))
                 shutil.copyfile(keypair.cert_path, full_cert_path)
                 shutil.copymode(keypair.cert_path, full_cert_path)
                 self.report.added.append(full_cert_path)
             if not os.path.exists(full_key_path):
-                log.info("Copying: %s -> %s" %
+                log.debug("Copying: %s -> %s" %
                     (keypair.key_path, full_key_path))
                 shutil.copyfile(keypair.key_path, full_key_path)
                 shutil.copymode(keypair.key_path, full_key_path)
@@ -184,7 +184,7 @@ class ContainerCertDir(object):
                 ca_symlink = os.path.join(self.path, outfile)
                 if not os.path.exists(ca_symlink):
                     os.symlink(RH_CDN_CA, ca_symlink)
-                    log.info("Created symlink: %s -> %s" % (ca_symlink, RH_CDN_CA))
+                    log.debug("Created symlink: %s -> %s" % (ca_symlink, RH_CDN_CA))
 
     def _rh_cdn_ca_exists(self):
         """
@@ -202,7 +202,7 @@ class ContainerCertDir(object):
             if os.path.isfile(fullpath) and \
                 os.path.splitext(f)[1] in self.MANAGED_EXTENSIONS and \
                 not f in expected_files:
-                    log.info("Cleaning up old certificate: %s" % f)
+                    log.debug("Cleaning up old certificate: %s" % f)
                     os.remove(fullpath)
                     self.report.removed.append(fullpath)
 

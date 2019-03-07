@@ -128,7 +128,7 @@ class EntCertUpdateAction(object):
         self.delete(rogue_serials)
         self.install(missing_serials)
 
-        log.info('certs updated:\n%s', self.report)
+        log.debug('certs updated:\n%s', self.report)
         self.syslog_results()
 
         if missing_serials or rogue_serials:
@@ -159,7 +159,7 @@ class EntCertUpdateAction(object):
                     for cont_access_cert in content_access_certs:
                         if cont_access_cert.serial not in expected:
                             obsolete_certs.append(cont_access_cert)
-                    log.info('Deleting obsolete content access certificate')
+                    log.debug('Deleting obsolete content access certificate')
                     self.delete(obsolete_certs)
                 update_data = self.content_access_cache.check_for_update()
                 for content_access_cert in content_access_certs:

@@ -120,7 +120,7 @@ class YumPluginManager(object):
                 continue
 
             if len(result) == 0:
-                log.info('Configuration file of %s plugin: "%s" cannot be read' %
+                log.warn('Configuration file of %s plugin: "%s" cannot be read' %
                          (pkg_mgr_name, plugin_file_name))
                 continue
 
@@ -168,7 +168,7 @@ class YumPluginManager(object):
 
         # When user doesn't want to automatically enable yum plugins, then return empty list
         if cls.is_auto_enable_enabled() is False:
-            log.info('The rhsm.auto_enable_yum_plugins is disabled. Skipping the enablement of yum plugins.')
+            log.debug('The rhsm.auto_enable_yum_plugins is disabled. Skipping the enablement of yum plugins.')
             return []
 
         log.debug('The rhsm.auto_enable_yum_plugins is enabled')
@@ -403,7 +403,7 @@ class RepoUpdateActionCommand(object):
             for repo_class, _dummy in get_repo_file_classes():
                 repo_file = repo_class()
                 if repo_file.exists():
-                    log.info("Removing %s due to manage_repos configuration." %
+                    log.debug("Removing %s due to manage_repos configuration." %
                             repo_file.path)
             RepoActionInvoker.delete_repo_file()
             return 0
@@ -461,7 +461,7 @@ class RepoUpdateActionCommand(object):
             # Update with the values we just wrote
             self.written_overrides.overrides = self.overrides
             self.written_overrides.write_cache()
-        log.info("repos updated: %s" % self.report)
+        log.debug("repos updated: %s" % self.report)
         return self.report
 
     def get_unique_content(self):
